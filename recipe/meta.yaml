@@ -12,8 +12,7 @@ source:
   sha256: e8e1017b2cf1dda767aef19d2fd9ee5ebe07e050d430f77a0a7c66ba08b8cdae
 
 build:
-  number: 1
-  noarch: python
+  number: 0
   script:
     # We are currently building a noarch package, but pysoundfile contains a
     # install-time check for the OS and injects the sf_wchar_open function
@@ -22,25 +21,31 @@ build:
     # Original issue on conda-forge: https://github.com/conda-forge/libsndfile-feedstock/issues/14
     - export PYSOUNDFILE_PLATFORM=win32
     - python -m pip install . --no-deps -vv
+  skip: true  # [py<36]
 
 requirements:
   host:
     - pip
-    - python >=3.6
+    - python
     - setuptools
     - cffi
   run:
-    - python >=3.6
+    - python
     - cffi
     - numpy
     - libsndfile >=1.2
 
 test:
+  source_files:
+    - tests
+  requires:
+    - pytest
   imports:
     - soundfile
   commands:
     # Verify that soundfile is linking the correct libsndfile object
-     python -c "import soundfile; print(soundfile._libname)"
+     - python -c "import soundfile; print(soundfile._libname)"
+     - pytest -vv . -k "not (test_available_formats or test_available_subtypes)"
 
 
 about:
