@@ -28,6 +28,7 @@ requirements:
     - pip
     - python
     - setuptools
+    - wheel
     - cffi
   run:
     - python
@@ -54,7 +55,13 @@ about:
   license_family: BSD
   license_file: LICENSE
   summary: 'SoundFile is an audio library based on libsndfile, CFFI, and NumPy'
+  description: |
+    The soundfile module can read and write sound files. File reading/writing is 
+    supported through libsndfile, which is a free, cross-platform, open-source 
+    (LGPL) library for reading and writing many different sampled sound file formats 
+    that runs on many platforms including Windows, OS X, and Unix
   dev_url: https://github.com/bastibe/python-soundfile
+  doc_url: https://python-soundfile.readthedocs.io/en/latest/
 
 extra:
   recipe-maintainers:
