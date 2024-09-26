@@ -21,7 +21,7 @@ build:
     # Original issue on conda-forge: https://github.com/conda-forge/libsndfile-feedstock/issues/14
     - export PYSOUNDFILE_PLATFORM=win32
     - python -m pip install . -vv --no-deps --no-build-isolation
-  skip: true  # [py<36]
+  skip: true  # [py<36 or s390x or win]
 
 requirements:
   host:
