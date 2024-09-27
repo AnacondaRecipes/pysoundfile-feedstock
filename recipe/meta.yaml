@@ -16,8 +16,13 @@ build:
   script:
     - python -m pip install . -vv --no-deps --no-build-isolation
   skip: true  # [py<36 or s390x or win]
+  patches:
+    - 0001-unvendor-libsndfile.patch
 
 requirements:
+  build:
+    - patch     # [not win]
+    - m2-patch  # [win]
   host:
     - pip
     - python
