@@ -16,7 +16,6 @@ build:
   script:
       # To make sure we really do not bring in _soundfile_data
     - rm -rf _soundfile_data  # [not win]
-    - delete _soundfile_data  # [win]
     - python -m pip install . -vv --no-deps --no-build-isolation
   skip: true  # [py<36 or s390x or win]
   patches:
@@ -43,13 +42,12 @@ test:
     - tests
   requires:
     - pytest
+    - pip <24.2
   imports:
     - soundfile
   commands:
-     # Verify that soundfile is linking the correct libsndfile object
-     - python -c "import soundfile; print(soundfile._libname)"
-     #- pytest -vv . -k "not (test_available_formats or test_available_subtypes)"
-     - pytest -vv .
+    - pip check
+    - pytest -vv .
 
 about:
   home: https://python-soundfile.readthedocs.io/
