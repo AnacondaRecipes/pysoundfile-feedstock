@@ -16,7 +16,7 @@ build:
   script:
       # To make sure we really do not bring in _soundfile_data
     - rm -rf _soundfile_data  # [not win]
-    - python -m pip install . -vv --no-deps --no-build-isolation
+    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: true  # [py<36 or s390x or win]
   patches:
     - 0001-unvendoring-libsndfile.patch
@@ -47,6 +47,7 @@ test:
     - soundfile
   commands:
     - pip check
+    - python -c "import soundfile; from pathlib import Path; print(soundfile._libname); assert(Path(soundfile._libname).stem == 'libsndfile')"
     - pytest -vv .
 
 about:
@@ -61,7 +62,7 @@ about:
     (LGPL) library for reading and writing many different sampled sound file formats 
     that runs on many platforms including Windows, OS X, and Unix
   dev_url: https://github.com/bastibe/python-soundfile
-  doc_url: https://python-soundfile.readthedocs.io/en/latest/
+  doc_url: https://python-soundfile.readthedocs.io
 
 extra:
   recipe-maintainers:
