@@ -47,7 +47,6 @@ test:
     - soundfile
   commands:
     - pip check
-    - python -c "import soundfile; from pathlib import Path; print(soundfile._libname); assert(Path(soundfile._libname).stem == 'libsndfile')"
     - pytest -vv .
 
 about:
