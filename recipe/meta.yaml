@@ -7,7 +7,6 @@ package:
   version: {{ version }}
 
 source:
-  fn: {{ pypi_name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ pypi_name[0] }}/{{ pypi_name }}/{{ pypi_name }}-{{ version }}.tar.gz
   sha256: e8e1017b2cf1dda767aef19d2fd9ee5ebe07e050d430f77a0a7c66ba08b8cdae
   patches:
@@ -16,6 +15,7 @@ source:
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  # skip win because libsndfile not available
   skip: true  # [py<36 or s390x or win]
 
 requirements:
