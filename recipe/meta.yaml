@@ -48,7 +48,10 @@ test:
   commands:
     - pip check
     # Verify that soundfile is linking the correct libsndfile object
-    - python -c "import soundfile; from pathlib import Path; print(soundfile._libname); assert(Path(soundfile._libname).stem == 'libsndfile')"
+    # - on linux-64: libsndfile.so.1
+    # - on osx libsndfile.dylib
+    # - on linux-aarch64: libsndfile.so
+    - python -c "import soundfile; from pathlib import Path; print(soundfile._libname); assert('libsndfile' in Path(soundfile._libname).stem)"
     - pytest -vv .
 
 about:
