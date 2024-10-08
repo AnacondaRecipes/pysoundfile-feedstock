@@ -13,11 +13,7 @@ source:
 
 build:
   number: 0
-  script:
-      # To make sure we really do not bring in _soundfile_data
-    - rm -rf _soundfile_data     # [not win]
-    - del /s /q _soundfile_data  # [win]
-    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: true  # [py<36 or s390x or win]
   patches:
     - patches/0001-unvendoring-libsndfile.patch
@@ -36,7 +32,7 @@ requirements:
     - python
     - cffi
     - numpy
-    - libsndfile >=1.2
+    - libsndfile >=1.2  # [not win]
 
 test:
   source_files:
