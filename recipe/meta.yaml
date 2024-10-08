@@ -47,6 +47,8 @@ test:
     - soundfile
   commands:
     - pip check
+    # Verify that soundfile is linking the correct libsndfile object
+    - python -c "import soundfile; from pathlib import Path; print(soundfile._libname); assert(Path(soundfile._libname).stem == 'libsndfile')"
     - pytest -vv .
 
 about:
