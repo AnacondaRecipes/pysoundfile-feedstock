@@ -42,7 +42,7 @@ test:
     - tests
   requires:
     - pytest
-    - pip <24.2
+    - pip
   imports:
     - soundfile
   commands:
