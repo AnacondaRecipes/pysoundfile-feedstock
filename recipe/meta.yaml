@@ -7,49 +7,68 @@ package:
   version: {{ version }}
 
 source:
-  fn: {{ pypi_name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ pypi_name[0] }}/{{ pypi_name }}/{{ pypi_name }}-{{ version }}.tar.gz
   sha256: e8e1017b2cf1dda767aef19d2fd9ee5ebe07e050d430f77a0a7c66ba08b8cdae
+  patches:
+    - patches/0001-unvendoring-libsndfile.patch
+    - patches/0002-platform-tag-fix.patch
 
 build:
-  number: 1
-  noarch: python
-  script:
-    # We are currently building a noarch package, but pysoundfile contains a
-    # install-time check for the OS and injects the sf_wchar_open function
-    # conditionally. If this variable is not set, opening files on Windows doesn't work
-    # Fix coming hopefully with https://github.com/bastibe/python-soundfile/pull/288
-    # Original issue on conda-forge: https://github.com/conda-forge/libsndfile-feedstock/issues/14
-    - export PYSOUNDFILE_PLATFORM=win32
-    - python -m pip install . --no-deps -vv
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  # skip win because libsndfile not available
+  skip: true  # [py<36 or s390x or win]
 
 requirements:
+  build:
+    - patch     # [not win]
+    - m2-patch  # [win]
   host:
     - pip
-    - python >=3.6
+    - python
     - setuptools
+    - wheel
     - cffi
   run:
-    - python >=3.6
+    - python
     - cffi
+    # numpy is optional, but from the readme it seems
+    # needed
     - numpy
+    # libsndfile is unvendored and added here as a dependency
     - libsndfile >=1.2
 
 test:
+  source_files:
+    - tests
+  requires:
+    - pytest
+    - pip
   imports:
     - soundfile
   commands:
+    - pip check
     # Verify that soundfile is linking the correct libsndfile object
-     python -c "import soundfile; print(soundfile._libname)"
-
+    # - on linux-64: libsndfile.so.1
+    # - on osx libsndfile.dylib
+    # - on linux-aarch64: libsndfile.so
+    # - we do not build for win, otherwise it would be libsndfile.dll
+    - python -c "import soundfile; from pathlib import Path; print(soundfile._libname); assert('libsndfile' in Path(soundfile._libname).stem)"
+    - pytest -vv .
 
 about:
-  home: https://python-soundfile.readthedocs.io/
+  home: https://python-soundfile.readthedocs.io
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE
   summary: 'SoundFile is an audio library based on libsndfile, CFFI, and NumPy'
+  description: |
+    The soundfile module can read and write sound files. File reading/writing is 
+    supported through libsndfile, which is a free, cross-platform, open-source 
+    (LGPL) library for reading and writing many different sampled sound file formats 
+    that runs on many platforms including Windows, OS X, and Unix
   dev_url: https://github.com/bastibe/python-soundfile
+  doc_url: https://python-soundfile.readthedocs.io
 
 extra:
   recipe-maintainers:
