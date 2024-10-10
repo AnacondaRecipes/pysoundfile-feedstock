@@ -1,6 +1,2 @@
 upload_channels:
   - sfe1ed40
-
-channels:
-  - https://staging.continuum.io/prefect/fs/libopus-feedstock/pr2/e0c0cd0
-  - https://staging.continuum.io/prefect/fs/libsndfile-feedstock/pr3/f3ccf26
