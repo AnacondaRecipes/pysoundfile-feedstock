@@ -49,7 +49,8 @@ test:
     # - osx: libsndfile.dylib
     # - win: sndfile.dll
     - python -c "import soundfile; from pathlib import Path; print(soundfile._libname); assert('sndfile' in Path(soundfile._libname).stem)"
-    - pytest -vv .
+    - pytest -vv .  # [not win]
+    - pytest -vv -k "not fd" .  # [win]
 
 about:
   home: https://python-soundfile.readthedocs.io
