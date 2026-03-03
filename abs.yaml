@@ -1,2 +1,1 @@
-upload_channels:
-  - sfe1ed40
+  ANACONDA_ROCKET_ENABLE_PY314 : yes

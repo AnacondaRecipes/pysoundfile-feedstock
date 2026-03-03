@@ -1,18 +1,17 @@
-From 67185b5da578ed5db010e3fd4f4e3972c0c7548d Mon Sep 17 00:00:00 2001
+From a8500c478102aa6d4df14aa4ca06f5a9d17ebb3c Mon Sep 17 00:00:00 2001
 From: Udo-Peter Steyer <ous8292@gmail.com>
 Date: Fri, 27 Sep 2024 15:04:50 -0500
-Subject: [PATCH] unvendoring libsndfile
-
+Subject: [PATCH 2/2] unvendoring libsndfile
 ---
- soundfile.py | 49 ++++---------------------------------------------
- 1 file changed, 4 insertions(+), 45 deletions(-)
+ soundfile.py | 63 ++++------------------------------------------------
+ 1 file changed, 4 insertions(+), 59 deletions(-)
 
 diff --git a/soundfile.py b/soundfile.py
-index cc13192..11b9245 100644
+index 61db56c..767189d 100644
 --- a/soundfile.py
 +++ b/soundfile.py
-@@ -145,51 +145,10 @@ _ffi_types = {
-     'int16': 'short'
+@@ -151,65 +151,10 @@ _bitrate_modes = {
+     'VARIABLE': 2,
  }
  
 -try:  # packaged lib (in _soundfile_data which should be on python path)
@@ -21,10 +20,24 @@ index cc13192..11b9245 100644
 -        _packaged_libname = 'libsndfile_' + _machine() + '.dylib'
 -    elif _sys.platform == 'win32':
 -        from platform import architecture as _architecture
--        _packaged_libname = 'libsndfile_' + _architecture()[0] + '.dll'
+-        from platform import machine as _machine
+-        # this check can not be completed correctly: for x64 binaries running on
+-        # arm64 Windows report the same values as arm64 binaries. For now, neither
+-        # numpy nor cffi are available for arm64, so we can safely assume we're
+-        # in x86 land:
+-        if _architecture()[0] == '64bit':
+-            _packaged_libname = 'libsndfile_x64.dll'
+-        elif _architecture()[0] == '32bit':
+-            _packaged_libname = 'libsndfile_x86.dll'
+-        else:
+-            raise OSError('no packaged library for Windows {} {}'
+-                          .format(_architecture(), _machine()))
 -    elif _sys.platform == 'linux':
 -        from platform import machine as _machine
--        _packaged_libname = 'libsndfile_' + _machine() + '.so'
+-        if _machine() in ["aarch64", "aarch64_be", "armv8b", "armv8l"]:
+-            _packaged_libname = 'libsndfile_arm64.so'
+-        else:
+-            _packaged_libname = 'libsndfile_' + _machine() + '.so'
 -    else:
 -        raise OSError('no packaged library for this platform')
 -
@@ -68,5 +81,5 @@ index cc13192..11b9245 100644
  __libsndfile_version__ = _ffi.string(_snd.sf_version_string()).decode('utf-8', 'replace')
  if __libsndfile_version__.startswith('libsndfile-'):
 -- 
-2.39.3 (Apple Git-146)
+2.50.1 (Apple Git-155)
 
