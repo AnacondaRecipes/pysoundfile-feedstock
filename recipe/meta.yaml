@@ -1,5 +1,5 @@
 {% set name = "pysoundfile" %}
-{% set version = "0.13.1" %}
+{% set version = "0.14.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,14 +7,15 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[2] }}/{{ name[2:] }}/{{ name[2:] }}-{{ version }}.tar.gz
-  sha256: b2c68dab1e30297317080a5b43df57e302584c49e2942defdde0acccc53f0e5b
+  sha256: ba1c1a2d618bca5c406647c83b89f07cc8810fa506a50622a6993ba130c1de11
   patches:
     - patches/0001-unvendoring-libsndfile.patch
     - patches/0002-platform-tag-fix.patch
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  # [py<310]
 
 requirements:
   host:
@@ -22,14 +23,16 @@ requirements:
     - python
     - setuptools
     - wheel
-    - cffi
+    - cffi >=1.0
+    - libsndfile {{ libsndfile }}
   run:
     - python
-    - cffi
+    - cffi >=1.0
     # numpy is optional, but from the readme it seems
     # needed
     - numpy
     - libsndfile >=1.2
+    - typing_extensions
 
 test:
   source_files:
@@ -54,11 +57,11 @@ about:
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE
-  summary: 'SoundFile is an audio library based on libsndfile, CFFI, and NumPy'
+  summary: SoundFile is an audio library based on libsndfile, CFFI, and NumPy
   description: |
-    The soundfile module can read and write sound files. File reading/writing is 
-    supported through libsndfile, which is a free, cross-platform, open-source 
-    (LGPL) library for reading and writing many different sampled sound file formats 
+    The soundfile module can read and write sound files. File reading/writing is
+    supported through libsndfile, which is a free, cross-platform, open-source
+    (LGPL) library for reading and writing many different sampled sound file formats
     that runs on many platforms including Windows, OS X, and Unix
   dev_url: https://github.com/bastibe/python-soundfile
   doc_url: https://python-soundfile.readthedocs.io
